@@ -1,37 +1,49 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../services/api'
 
 export default function LoginPage() {
-  const [tab, setTab] = useState('usuario') // 'usuario' | 'admin'
+  const [tab, setTab] = useState('usuario')
   const [nombre, setNombre] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [cargando, setCargando] = useState(false)
   const navigate = useNavigate()
 
+  // Si ya hay sesión activa válida, redirigir directo
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}')
+    if (token && usuario.nombre) {
+      navigate(usuario.esAdmin ? '/admin' : '/quiniela', { replace: true })
+    }
+  }, [navigate])
+
   const handleUsuario = async (e) => {
     e.preventDefault()
-    if (!nombre.trim()) { setError('Escribe tu nombre'); return }
+    const nombreLimpio = nombre.trim()
+    if (!nombreLimpio) { setError('Escribe tu nombre'); return }
     setCargando(true); setError('')
     try {
-      const { data } = await authApi.acceso(nombre.trim())
+      const { data } = await authApi.acceso(nombreLimpio)
       localStorage.setItem('token', data.token)
       localStorage.setItem('usuario', JSON.stringify({ nombre: data.nombre, esAdmin: false }))
-      navigate('/quiniela')
+      // yaRegistrado = true significa que ya tenía pronósticos, mandamos directo al resumen
+      navigate(data.yaRegistrado ? '/resumen' : '/quiniela', { replace: true })
     } catch (err) {
-      setError(err.response?.data?.mensaje || 'Error al ingresar')
+      setError(err.response?.data?.mensaje || 'Error al ingresar, intenta de nuevo')
     } finally { setCargando(false) }
   }
 
   const handleAdmin = async (e) => {
     e.preventDefault()
+    if (!password.trim()) { setError('Escribe la contraseña'); return }
     setCargando(true); setError('')
     try {
       const { data } = await authApi.adminLogin('admin', password)
       localStorage.setItem('token', data.token)
       localStorage.setItem('usuario', JSON.stringify({ nombre: 'admin', esAdmin: true }))
-      navigate('/admin')
+      navigate('/admin', { replace: true })
     } catch (err) {
       setError(err.response?.data?.mensaje || 'Credenciales incorrectas')
     } finally { setCargando(false) }
@@ -66,7 +78,7 @@ export default function LoginPage() {
                 type="text"
                 placeholder="Tu nombre o apodo..."
                 value={nombre}
-                onChange={e => setNombre(e.target.value)}
+                onChange={e => { setNombre(e.target.value); setError('') }}
                 maxLength={60}
                 autoFocus
               />
@@ -76,10 +88,10 @@ export default function LoginPage() {
               className="btn btn-primary btn-block mt-16"
               disabled={cargando}
             >
-              {cargando ? 'Cargando...' : '¡Entrar a la quiniela! ⚽'}
+              {cargando ? 'Buscando...' : '¡Entrar a la quiniela! ⚽'}
             </button>
             <p style={{ marginTop: 12, fontSize: '0.78rem', color: 'var(--texto-suave)', textAlign: 'center' }}>
-              Si ya llenaste tu quiniela, te reconoceremos por tu nombre.
+              Si ya llenaste tu quiniela, te reconoceremos por tu nombre y verás tus pronósticos.
             </p>
           </form>
         ) : (
@@ -91,7 +103,7 @@ export default function LoginPage() {
                 type="password"
                 placeholder="Contraseña..."
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={e => { setPassword(e.target.value); setError('') }}
                 autoFocus
               />
             </div>

@@ -11,14 +11,18 @@ api.interceptors.request.use(config => {
   return config
 })
 
-// Si el token expiró, limpiar sesión
+// Si el token expiró (401), limpiar sesión y mandar al login
 api.interceptors.response.use(
   res => res,
   err => {
     if (err.response?.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('usuario')
-      window.location.href = '/'
+      // Solo limpiar si hay token — evita loop si el error es en el propio login
+      const token = localStorage.getItem('token')
+      if (token) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('usuario')
+        window.location.href = '/'
+      }
     }
     return Promise.reject(err)
   }
