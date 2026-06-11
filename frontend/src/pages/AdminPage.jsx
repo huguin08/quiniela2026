@@ -2,28 +2,19 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { quinielaApi } from '../services/api'
 
-const DIAS = [
-  { fecha: '2026-06-11', label: '11 Jun', partidos: ['México vs Sudáfrica','Corea del Sur vs Chequia'] },
-  { fecha: '2026-06-12', label: '12 Jun', partidos: ['Canadá vs Bosnia y Herz.','Estados Unidos vs Paraguay'] },
-  { fecha: '2026-06-13', label: '13 Jun', partidos: ['Qatar vs Suiza','Brasil vs Marruecos','Haití vs Escocia','Australia vs Turquía'] },
-  { fecha: '2026-06-14', label: '14 Jun', partidos: ['Alemania vs Curazao','Países Bajos vs Japón','Costa de Marfil vs Ecuador','Túnez vs Suecia'] },
-  { fecha: '2026-06-15', label: '15 Jun', partidos: ['España vs Cabo Verde','Bélgica vs Egipto','Arabia Saudí vs Uruguay','Irán vs Nueva Zelanda'] },
-  { fecha: '2026-06-16', label: '16 Jun', partidos: ['Francia vs Senegal','Irak vs Noruega','Argentina vs Argelia','Austria vs Jordania'] },
-  { fecha: '2026-06-17', label: '17 Jun', partidos: ['Portugal vs Congo DR','Inglaterra vs Croacia','Ghana vs Panamá','Uzbekistán vs Colombia'] },
-  { fecha: '2026-06-18', label: '18 Jun', partidos: ['Chequia vs Sudáfrica','Suiza vs Bosnia y Herz.','Canadá vs Qatar','México vs Corea del Sur'] },
-  { fecha: '2026-06-19', label: '19 Jun', partidos: ['Estados Unidos vs Australia','Escocia vs Marruecos','Brasil vs Haití','Turquía vs Paraguay'] },
-  { fecha: '2026-06-20', label: '20 Jun', partidos: ['Ecuador vs Alemania','Japón vs Suecia','Curazao vs Costa de Marfil','Países Bajos vs Túnez'] },
-  { fecha: '2026-06-21', label: '21 Jun', partidos: ['España vs Arabia Saudí','Bélgica vs Irán','Cabo Verde vs Uruguay','Egipto vs Nueva Zelanda'] },
-  { fecha: '2026-06-22', label: '22 Jun', partidos: ['Senegal vs Irak','Argentina vs Austria','Francia vs Noruega','Argelia vs Jordania'] },
-  { fecha: '2026-06-23', label: '23 Jun', partidos: ['Congo DR vs Uzbekistán','Croacia vs Ghana','Portugal vs Colombia','Panamá vs Inglaterra'] },
-  { fecha: '2026-06-24', label: '24 Jun', partidos: ['México vs Chequia','Sudáfrica vs Corea del Sur'] },
-  { fecha: '2026-06-25', label: '25 Jun', partidos: ['Bosnia y Herz. vs Suiza','Qatar vs Canadá'] },
-  { fecha: '2026-06-26', label: '26 Jun', partidos: ['Marruecos vs Escocia','Haití vs Brasil'] },
-  { fecha: '2026-06-27', label: '27 Jun', partidos: ['Turquía vs Estados Unidos','Paraguay vs Australia','Ecuador vs Curazao','Costa de Marfil vs Alemania','Japón vs Túnez','Suecia vs Países Bajos','Irán vs Nueva Zelanda','Egipto vs Bélgica'] },
-  { fecha: '2026-06-28', label: '28 Jun', partidos: ['Cabo Verde vs Uruguay','Arabia Saudí vs España','Senegal vs Noruega','Irak vs Francia'] },
-  { fecha: '2026-06-29', label: '29 Jun', partidos: ['Austria vs Jordania','Argelia vs Argentina','Congo DR vs Colombia','Uzbekistán vs Portugal'] },
-  { fecha: '2026-06-30', label: '30 Jun', partidos: ['Croacia vs Panamá','Ghana vs Inglaterra'] },
+// Fuente de verdad: partidos agrupados por fecha
+// Se usa SOLO para ordenar los días en el reporte y la vista
+const ORDEN_DIAS = [
+  '2026-06-11','2026-06-12','2026-06-13','2026-06-14','2026-06-15',
+  '2026-06-16','2026-06-17','2026-06-18','2026-06-19','2026-06-20',
+  '2026-06-21','2026-06-22','2026-06-23','2026-06-24','2026-06-25',
+  '2026-06-26','2026-06-27','2026-06-28','2026-06-29','2026-06-30',
 ]
+
+function labelDia(fechaStr) {
+  const d = new Date(fechaStr + 'T12:00:00')
+  return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })
+}
 
 function getRes(resultado, equipoLocal, equipoVisitante, flagL, flagV) {
   if (resultado === 'L') return `${flagL} ${equipoLocal}`
@@ -35,15 +26,52 @@ function getClase(r) {
   return r === 'L' ? 'res-L' : r === 'E' ? 'res-E' : 'res-V'
 }
 
-// Genera el HTML del reporte para abrir en nueva ventana / imprimir
-function generarReporteHTML(datos, partidosPorDia) {
-  const filas = DIAS.map(dia => {
-    const psDelDia = partidosPorDia[dia.fecha] || []
-    if (psDelDia.length === 0) return ''
+// Construye el mapa dia->partidos usando fechaPartido del backend (fuente real)
+function construirMapaPorDia(datos) {
+  const mapa = {} // { 'YYYY-MM-DD': [{ equipoLocal, equipoVisitante, grupo, banderaLocal, banderaVisitante }] }
+  const vistos = new Set()
 
+  datos.forEach(usuario => {
+    usuario.pronosticos.forEach(p => {
+      const key = `${p.equipoLocal}|${p.equipoVisitante}`
+      if (vistos.has(key)) return
+      vistos.add(key)
+
+      // fechaPartido viene como '2026-06-14T15:00:00' — tomamos solo la fecha
+      const fecha = p.fechaPartido
+        ? p.fechaPartido.substring(0, 10)
+        : null
+
+      if (!fecha) return
+
+      if (!mapa[fecha]) mapa[fecha] = []
+      mapa[fecha].push({
+        equipoLocal: p.equipoLocal,
+        equipoVisitante: p.equipoVisitante,
+        grupo: p.grupo,
+        banderaLocal: p.banderaLocal,
+        banderaVisitante: p.banderaVisitante,
+        fechaPartido: p.fechaPartido,
+      })
+    })
+  })
+
+  // Ordenar partidos dentro de cada día por hora
+  Object.keys(mapa).forEach(fecha => {
+    mapa[fecha].sort((a, b) => a.fechaPartido.localeCompare(b.fechaPartido))
+  })
+
+  return mapa
+}
+
+function generarReporteHTML(datos, mapaPartidosPorDia) {
+  const diasConPartidos = ORDEN_DIAS.filter(f => mapaPartidosPorDia[f]?.length > 0)
+
+  const filas = diasConPartidos.map(fecha => {
+    const psDelDia = mapaPartidosPorDia[fecha]
     return `
       <tr class="dia-row">
-        <td colspan="${2 + datos.length}" class="dia-header">📅 ${dia.label}</td>
+        <td colspan="${2 + datos.length}" class="dia-header">📅 ${labelDia(fecha)}</td>
       </tr>
       ${psDelDia.map(partido => {
         const celdas = datos.map(usuario => {
@@ -73,7 +101,7 @@ function generarReporteHTML(datos, partidosPorDia) {
   h1 { text-align: center; font-size: 18px; margin-bottom: 4px; }
   p.sub { text-align: center; color: #666; margin-bottom: 16px; font-size: 11px; }
   table { width: 100%; border-collapse: collapse; }
-  th { background: #1a5c2e; color: #FFD700; padding: 6px 8px; text-align: center; font-size: 10px; position: sticky; top: 0; }
+  th { background: #1a5c2e; color: #FFD700; padding: 6px 8px; text-align: center; font-size: 10px; }
   th.partido-th { text-align: left; min-width: 180px; }
   td { padding: 5px 8px; border-bottom: 1px solid #ddd; text-align: center; }
   td.partido-cell { text-align: left; font-weight: 600; }
@@ -120,60 +148,8 @@ export default function AdminPage() {
 
   if (cargando) return <div className="spinner" />
 
-  // Agrupar partidos por fecha para la vista concentrada
-  const partidosPorDia = {}
-  if (datos.length > 0) {
-    const todosLosPartidos = []
-    datos.forEach(u => {
-      u.pronosticos.forEach(p => {
-        const key = `${p.equipoLocal}-${p.equipoVisitante}`
-        if (!todosLosPartidos.find(x => `${x.equipoLocal}-${x.equipoVisitante}` === key)) {
-          todosLosPartidos.push(p)
-        }
-      })
-    })
-    todosLosPartidos.forEach(p => {
-      const fecha = p.fechaModificacion ? p.fechaModificacion.substring(0, 10) : ''
-      // Mapear partido a su día real usando el grupo y equipos
-      DIAS.forEach(dia => {
-        const match = dia.partidos.some(dp => {
-          const [local, vis] = dp.split(' vs ')
-          return p.equipoLocal.includes(local.trim()) || local.trim().includes(p.equipoLocal)
-        })
-      })
-    })
-  }
-
-  // Construir mapa dia -> partidos usando DIAS como fuente de verdad
-  const mapaPartidosPorDia = {}
-  DIAS.forEach(dia => {
-    mapaPartidosPorDia[dia.fecha] = []
-    dia.partidos.forEach(dp => {
-      const [localLabel, visLabel] = dp.split(' vs ')
-      // Buscar partido real en los pronosticos de cualquier usuario
-      let partidoRef = null
-      for (const u of datos) {
-        partidoRef = u.pronosticos.find(p =>
-          p.equipoLocal.toLowerCase().includes(localLabel.trim().toLowerCase().substring(0, 5)) ||
-          localLabel.trim().toLowerCase().includes(p.equipoLocal.toLowerCase().substring(0, 5))
-        )
-        if (partidoRef) break
-      }
-      // Si no encontramos referencia exacta, buscamos por texto parcial más amplio
-      for (const u of datos) {
-        const found = u.pronosticos.find(p => {
-          const localMatch = p.equipoLocal.toLowerCase().split(' ').some(w =>
-            w.length > 3 && localLabel.toLowerCase().includes(w))
-          return localMatch
-        })
-        if (found && !mapaPartidosPorDia[dia.fecha].find(x =>
-          x.equipoLocal === found.equipoLocal && x.equipoVisitante === found.equipoVisitante)) {
-          mapaPartidosPorDia[dia.fecha].push(found)
-          break
-        }
-      }
-    })
-  })
+  const mapaPartidosPorDia = construirMapaPorDia(datos)
+  const diasConPartidos = ORDEN_DIAS.filter(f => mapaPartidosPorDia[f]?.length > 0)
 
   const abrirReporte = () => {
     const html = generarReporteHTML(datos, mapaPartidosPorDia)
@@ -219,7 +195,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Botón reporte concentrado */}
+        {/* Botón reporte */}
         <button
           className="btn btn-dorado btn-block mt-16"
           onClick={abrirReporte}
@@ -281,17 +257,14 @@ export default function AdminPage() {
               />
             </div>
 
-            {/* Vista agrupada por día */}
-            {DIAS.map(dia => {
-              const psDelDia = mapaPartidosPorDia[dia.fecha] || []
-              if (psDelDia.length === 0) return null
-
+            {diasConPartidos.map(fecha => {
+              const psDelDia = mapaPartidosPorDia[fecha]
               return (
-                <div key={dia.fecha} className="mt-24">
+                <div key={fecha} className="mt-24">
                   <div className="grupo-header">
                     <span className="grupo-letra" style={{ fontSize: '1rem' }}>📅</span>
                     <span className="grupo-titulo" style={{ color: 'var(--blanco)', fontWeight: 700, fontSize: '1rem' }}>
-                      {dia.label} · {psDelDia.length} partido{psDelDia.length > 1 ? 's' : ''}
+                      {labelDia(fecha)} · {psDelDia.length} partido{psDelDia.length > 1 ? 's' : ''}
                     </span>
                   </div>
 
