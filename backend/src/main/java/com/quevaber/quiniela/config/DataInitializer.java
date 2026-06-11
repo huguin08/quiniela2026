@@ -33,105 +33,116 @@ public class DataInitializer {
             // Sembrar partidos si la tabla está vacía
             if (partidoRepo.count() == 0) {
                 List<Partido> partidos = List.of(
-                    // ===== GRUPO A =====
-                    p("A", "México", "Sudáfrica", "🇲🇽", "🇿🇦", LocalDateTime.of(2026, 6, 11, 13, 0), "Ciudad de México", 1),
-                    p("A", "Corea del Sur", "Chequia", "🇰🇷", "🇨🇿", LocalDateTime.of(2026, 6, 11, 20, 0), "Guadalajara", 2),
-                    p("A", "Chequia", "Sudáfrica", "🇨🇿", "🇿🇦", LocalDateTime.of(2026, 6, 18, 10, 0), "Atlanta", 3),
-                    p("A", "México", "Corea del Sur", "🇲🇽", "🇰🇷", LocalDateTime.of(2026, 6, 18, 19, 0), "Guadalajara", 4),
-                    p("A", "Chequia", "México", "🇨🇿", "🇲🇽", LocalDateTime.of(2026, 6, 24, 19, 0), "Ciudad de México", 5),
-                    p("A", "Sudáfrica", "Corea del Sur", "🇿🇦", "🇰🇷", LocalDateTime.of(2026, 6, 24, 19, 0), "Monterrey", 6),
 
-                    // ===== GRUPO B =====
-                    p("B", "Canadá", "Bosnia y Herz.", "🇨🇦", "🇧🇦", LocalDateTime.of(2026, 6, 12, 15, 0), "Toronto", 1),
-                    p("B", "Qatar", "Suiza", "🇶🇦", "🇨🇭", LocalDateTime.of(2026, 6, 13, 12, 0), "San Francisco", 2),
-                    p("B", "Bosnia y Herz.", "Qatar", "🇧🇦", "🇶🇦", LocalDateTime.of(2026, 6, 19, 12, 0), "Seattle", 3),
-                    p("B", "Suiza", "Canadá", "🇨🇭", "🇨🇦", LocalDateTime.of(2026, 6, 19, 18, 0), "Vancouver", 4),
-                    p("B", "Bosnia y Herz.", "Suiza", "🇧🇦", "🇨🇭", LocalDateTime.of(2026, 6, 25, 19, 0), "Kansas City", 5),
-                    p("B", "Qatar", "Canadá", "🇶🇦", "🇨🇦", LocalDateTime.of(2026, 6, 25, 19, 0), "Houston", 6),
+                    // ===== 11 de Junio =====
+                    p("A", "México",        "Sudáfrica",          "🇲🇽","🇿🇦", LocalDateTime.of(2026,6,11,14,0),  "Ciudad de México", 1),
+                    p("A", "Corea del Sur", "Chequia",            "🇰🇷","🇨🇿", LocalDateTime.of(2026,6,11,21,0),  "Guadalajara",      2),
 
-                    // ===== GRUPO C =====
-                    p("C", "Brasil", "Marruecos", "🇧🇷", "🇲🇦", LocalDateTime.of(2026, 6, 13, 18, 0), "Nueva York/NJ", 1),
-                    p("C", "Haití", "Escocia", "🇭🇹", "🏴󠁧󠁢󠁳󠁣󠁴󠁿", LocalDateTime.of(2026, 6, 13, 21, 0), "Boston", 2),
-                    p("C", "Marruecos", "Haití", "🇲🇦", "🇭🇹", LocalDateTime.of(2026, 6, 19, 15, 0), "Miami", 3),
-                    p("C", "Escocia", "Brasil", "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "🇧🇷", LocalDateTime.of(2026, 6, 20, 18, 0), "Filadelfia", 4),
-                    p("C", "Marruecos", "Escocia", "🇲🇦", "🏴󠁧󠁢󠁳󠁣󠁴󠁿", LocalDateTime.of(2026, 6, 26, 19, 0), "Atlanta", 5),
-                    p("C", "Haití", "Brasil", "🇭🇹", "🇧🇷", LocalDateTime.of(2026, 6, 26, 19, 0), "Boston", 6),
+                    // ===== 12 de Junio =====
+                    p("B", "Canadá",        "Bosnia y Herz.",     "🇨🇦","🇧🇦", LocalDateTime.of(2026,6,12,14,0),  "Toronto",          1),
+                    p("D", "Estados Unidos","Paraguay",           "🇺🇸","🇵🇾", LocalDateTime.of(2026,6,12,20,0),  "Los Ángeles",      1),
 
-                    // ===== GRUPO D =====
-                    p("D", "Estados Unidos", "Paraguay", "🇺🇸", "🇵🇾", LocalDateTime.of(2026, 6, 12, 18, 0), "Los Ángeles", 1),
-                    p("D", "Australia", "Turquía", "🇦🇺", "🇹🇷", LocalDateTime.of(2026, 6, 13, 15, 0), "Dallas", 2),
-                    p("D", "Turquía", "Paraguay", "🇹🇷", "🇵🇾", LocalDateTime.of(2026, 6, 19, 21, 0), "Kansas City", 3),
-                    p("D", "Estados Unidos", "Australia", "🇺🇸", "🇦🇺", LocalDateTime.of(2026, 6, 20, 15, 0), "Seattle", 4),
-                    p("D", "Turquía", "Estados Unidos", "🇹🇷", "🇺🇸", LocalDateTime.of(2026, 6, 25, 19, 0), "Los Ángeles", 5),
-                    p("D", "Paraguay", "Australia", "🇵🇾", "🇦🇺", LocalDateTime.of(2026, 6, 25, 19, 0), "Dallas", 6),
+                    // ===== 13 de Junio =====
+                    p("B", "Qatar",         "Suiza",              "🇶🇦","🇨🇭", LocalDateTime.of(2026,6,13,14,0),  "San Francisco",    2),
+                    p("C", "Brasil",        "Marruecos",          "🇧🇷","🇲🇦", LocalDateTime.of(2026,6,13,17,0),  "Nueva York/NJ",    1),
+                    p("C", "Haití",         "Escocia",            "🇭🇹","🏴󠁧󠁢󠁳󠁣󠁴󠁿", LocalDateTime.of(2026,6,13,20,0),  "Boston",           2),
+                    p("D", "Australia",     "Turquía",            "🇦🇺","🇹🇷", LocalDateTime.of(2026,6,13,23,0),  "Vancouver",        2),
 
-                    // ===== GRUPO E =====
-                    p("E", "Alemania", "Curazao", "🇩🇪", "🇨🇼", LocalDateTime.of(2026, 6, 14, 18, 0), "San Francisco", 1),
-                    p("E", "Costa de Marfil", "Ecuador", "🇨🇮", "🇪🇨", LocalDateTime.of(2026, 6, 14, 21, 0), "Houston", 2),
-                    p("E", "Ecuador", "Alemania", "🇪🇨", "🇩🇪", LocalDateTime.of(2026, 6, 20, 18, 0), "Miami", 3),
-                    p("E", "Curazao", "Costa de Marfil", "🇨🇼", "🇨🇮", LocalDateTime.of(2026, 6, 21, 15, 0), "Dallas", 4),
-                    p("E", "Ecuador", "Curazao", "🇪🇨", "🇨🇼", LocalDateTime.of(2026, 6, 26, 19, 0), "Houston", 5),
-                    p("E", "Costa de Marfil", "Alemania", "🇨🇮", "🇩🇪", LocalDateTime.of(2026, 6, 26, 19, 0), "Kansas City", 6),
+                    // ===== 14 de Junio =====
+                    p("E", "Alemania",      "Curazao",            "🇩🇪","🇨🇼", LocalDateTime.of(2026,6,14,12,0),  "Houston",          1),
+                    p("F", "Países Bajos",  "Japón",              "🇳🇱","🇯🇵", LocalDateTime.of(2026,6,14,15,0),  "Dallas",           1),
+                    p("E", "Costa de Marfil","Ecuador",           "🇨🇮","🇪🇨", LocalDateTime.of(2026,6,14,18,0),  "Filadelfia",       2),
+                    p("F", "Túnez",         "Suecia",             "🇹🇳","🇸🇪", LocalDateTime.of(2026,6,14,21,0),  "Monterrey",        2),
 
-                    // ===== GRUPO F =====
-                    p("F", "Países Bajos", "Japón", "🇳🇱", "🇯🇵", LocalDateTime.of(2026, 6, 14, 15, 0), "Nueva York/NJ", 1),
-                    p("F", "Suecia", "Túnez", "🇸🇪", "🇹🇳", LocalDateTime.of(2026, 6, 15, 12, 0), "Filadelfia", 2),
-                    p("F", "Japón", "Suecia", "🇯🇵", "🇸🇪", LocalDateTime.of(2026, 6, 21, 18, 0), "Seattle", 3),
-                    p("F", "Túnez", "Países Bajos", "🇹🇳", "🇳🇱", LocalDateTime.of(2026, 6, 21, 21, 0), "Boston", 4),
-                    p("F", "Japón", "Túnez", "🇯🇵", "🇹🇳", LocalDateTime.of(2026, 6, 27, 19, 0), "San Francisco", 5),
-                    p("F", "Suecia", "Países Bajos", "🇸🇪", "🇳🇱", LocalDateTime.of(2026, 6, 27, 19, 0), "Seattle", 6),
+                    // ===== 15 de Junio =====
+                    p("H", "España",        "Cabo Verde",         "🇪🇸","🇨🇻", LocalDateTime.of(2026,6,15,11,0),  "Atlanta",          1),
+                    p("G", "Bélgica",       "Egipto",             "🇧🇪","🇪🇬", LocalDateTime.of(2026,6,15,14,0),  "Seattle",          1),
+                    p("H", "Arabia Saudí",  "Uruguay",            "🇸🇦","🇺🇾", LocalDateTime.of(2026,6,15,17,0),  "Miami",            2),
+                    p("G", "Irán",          "Nueva Zelanda",      "🇮🇷","🇳🇿", LocalDateTime.of(2026,6,15,20,0),  "Los Ángeles",      2),
 
-                    // ===== GRUPO G =====
-                    p("G", "Bélgica", "Irán", "🇧🇪", "🇮🇷", LocalDateTime.of(2026, 6, 15, 18, 0), "Los Ángeles", 1),
-                    p("G", "Egipto", "Nueva Zelanda", "🇪🇬", "🇳🇿", LocalDateTime.of(2026, 6, 15, 15, 0), "Miami", 2),
-                    p("G", "Irán", "Egipto", "🇮🇷", "🇪🇬", LocalDateTime.of(2026, 6, 22, 12, 0), "Toronto", 3),
-                    p("G", "Nueva Zelanda", "Bélgica", "🇳🇿", "🇧🇪", LocalDateTime.of(2026, 6, 22, 15, 0), "Atlanta", 4),
-                    p("G", "Irán", "Nueva Zelanda", "🇮🇷", "🇳🇿", LocalDateTime.of(2026, 6, 27, 19, 0), "Los Ángeles", 5),
-                    p("G", "Egipto", "Bélgica", "🇪🇬", "🇧🇪", LocalDateTime.of(2026, 6, 27, 19, 0), "Filadelfia", 6),
+                    // ===== 16 de Junio =====
+                    p("I", "Francia",       "Senegal",            "🇫🇷","🇸🇳", LocalDateTime.of(2026,6,16,14,0),  "Nueva York/NJ",    1),
+                    p("I", "Irak",          "Noruega",            "🇮🇶","🇳🇴", LocalDateTime.of(2026,6,16,17,0),  "Boston",           2),
+                    p("J", "Argentina",     "Argelia",            "🇦🇷","🇩🇿", LocalDateTime.of(2026,6,16,20,0),  "Kansas City",      1),
+                    p("J", "Austria",       "Jordania",           "🇦🇹","🇯🇴", LocalDateTime.of(2026,6,16,23,0),  "San Francisco",    2),
 
-                    // ===== GRUPO H =====
-                    p("H", "España", "Cabo Verde", "🇪🇸", "🇨🇻", LocalDateTime.of(2026, 6, 15, 12, 0), "Atlanta", 1),
-                    p("H", "Arabia Saudí", "Uruguay", "🇸🇦", "🇺🇾", LocalDateTime.of(2026, 6, 15, 21, 0), "Houston", 2),
-                    p("H", "Cabo Verde", "Arabia Saudí", "🇨🇻", "🇸🇦", LocalDateTime.of(2026, 6, 21, 12, 0), "Guadalajara", 3),
-                    p("H", "Uruguay", "España", "🇺🇾", "🇪🇸", LocalDateTime.of(2026, 6, 22, 18, 0), "Dallas", 4),
-                    p("H", "Cabo Verde", "Uruguay", "🇨🇻", "🇺🇾", LocalDateTime.of(2026, 6, 28, 19, 0), "Miami", 5),
-                    p("H", "Arabia Saudí", "España", "🇸🇦", "🇪🇸", LocalDateTime.of(2026, 6, 28, 19, 0), "Nueva York/NJ", 6),
+                    // ===== 17 de Junio =====
+                    p("K", "Portugal",      "Congo DR",           "🇵🇹","🇨🇩", LocalDateTime.of(2026,6,17,12,0),  "Houston",          1),
+                    p("L", "Inglaterra",    "Croacia",            "🏴󠁧󠁢󠁥󠁮󠁧󠁿","🇭🇷", LocalDateTime.of(2026,6,17,15,0),  "Dallas",           1),
+                    p("L", "Ghana",         "Panamá",             "🇬🇭","🇵🇦", LocalDateTime.of(2026,6,17,18,0),  "Toronto",          2),
+                    p("K", "Uzbekistán",    "Colombia",           "🇺🇿","🇨🇴", LocalDateTime.of(2026,6,17,21,0),  "Ciudad de México", 2),
 
-                    // ===== GRUPO I =====
-                    p("I", "Francia", "Senegal", "🇫🇷", "🇸🇳", LocalDateTime.of(2026, 6, 16, 15, 0), "Nueva York/NJ", 1),
-                    p("I", "Irak", "Noruega", "🇮🇶", "🇳🇴", LocalDateTime.of(2026, 6, 16, 18, 0), "Dallas", 2),
-                    p("I", "Senegal", "Irak", "🇸🇳", "🇮🇶", LocalDateTime.of(2026, 6, 22, 21, 0), "Houston", 3),
-                    p("I", "Noruega", "Francia", "🇳🇴", "🇫🇷", LocalDateTime.of(2026, 6, 23, 18, 0), "Los Ángeles", 4),
-                    p("I", "Senegal", "Noruega", "🇸🇳", "🇳🇴", LocalDateTime.of(2026, 6, 28, 19, 0), "Atlanta", 5),
-                    p("I", "Irak", "Francia", "🇮🇶", "🇫🇷", LocalDateTime.of(2026, 6, 28, 19, 0), "San Francisco", 6),
+                    // ===== 18 de Junio =====
+                    p("A", "Chequia",       "Sudáfrica",          "🇨🇿","🇿🇦", LocalDateTime.of(2026,6,18,11,0),  "Atlanta",          3),
+                    p("B", "Suiza",         "Bosnia y Herz.",     "🇨🇭","🇧🇦", LocalDateTime.of(2026,6,18,14,0),  "Los Ángeles",      3),
+                    p("B", "Canadá",        "Qatar",              "🇨🇦","🇶🇦", LocalDateTime.of(2026,6,18,17,0),  "Vancouver",        4),
+                    p("A", "México",        "Corea del Sur",      "🇲🇽","🇰🇷", LocalDateTime.of(2026,6,18,20,0),  "Guadalajara",      4),
 
-                    // ===== GRUPO J =====
-                    p("J", "Argentina", "Austria", "🇦🇷", "🇦🇹", LocalDateTime.of(2026, 6, 16, 21, 0), "Los Ángeles", 1),
-                    p("J", "Argelia", "Jordania", "🇩🇿", "🇯🇴", LocalDateTime.of(2026, 6, 17, 12, 0), "Boston", 2),
-                    p("J", "Austria", "Argelia", "🇦🇹", "🇩🇿", LocalDateTime.of(2026, 6, 23, 12, 0), "Filadelfia", 3),
-                    p("J", "Jordania", "Argentina", "🇯🇴", "🇦🇷", LocalDateTime.of(2026, 6, 23, 15, 0), "Miami", 4),
-                    p("J", "Austria", "Jordania", "🇦🇹", "🇯🇴", LocalDateTime.of(2026, 6, 29, 19, 0), "Toronto", 5),
-                    p("J", "Argelia", "Argentina", "🇩🇿", "🇦🇷", LocalDateTime.of(2026, 6, 29, 19, 0), "Dallas", 6),
+                    // ===== 19 de Junio =====
+                    p("D", "Estados Unidos","Australia",          "🇺🇸","🇦🇺", LocalDateTime.of(2026,6,19,14,0),  "Seattle",          3),
+                    p("C", "Escocia",       "Marruecos",          "🏴󠁧󠁢󠁳󠁣󠁴󠁿","🇲🇦", LocalDateTime.of(2026,6,19,14,0),  "Boston",           3),
+                    p("C", "Brasil",        "Haití",              "🇧🇷","🇭🇹", LocalDateTime.of(2026,6,19,17,0),  "Houston",          4),
+                    p("D", "Turquía",       "Paraguay",           "🇹🇷","🇵🇾", LocalDateTime.of(2026,6,19,20,0),  "Kansas City",      4),
 
-                    // ===== GRUPO K =====
-                    p("K", "Portugal", "Congo DR", "🇵🇹", "🇨🇩", LocalDateTime.of(2026, 6, 17, 18, 0), "Kansas City", 1),
-                    p("K", "Uzbekistán", "Colombia", "🇺🇿", "🇨🇴", LocalDateTime.of(2026, 6, 17, 21, 0), "Seattle", 2),
-                    p("K", "Congo DR", "Uzbekistán", "🇨🇩", "🇺🇿", LocalDateTime.of(2026, 6, 23, 21, 0), "Vancouver", 3),
-                    p("K", "Colombia", "Portugal", "🇨🇴", "🇵🇹", LocalDateTime.of(2026, 6, 24, 15, 0), "Houston", 4),
-                    p("K", "Congo DR", "Colombia", "🇨🇩", "🇨🇴", LocalDateTime.of(2026, 6, 29, 19, 0), "Monterrey", 5),
-                    p("K", "Uzbekistán", "Portugal", "🇺🇿", "🇵🇹", LocalDateTime.of(2026, 6, 29, 19, 0), "San Francisco", 6),
+                    // ===== 20 de Junio =====
+                    p("E", "Ecuador",       "Alemania",           "🇪🇨","🇩🇪", LocalDateTime.of(2026,6,20,14,0),  "Miami",            3),
+                    p("F", "Japón",         "Suecia",             "🇯🇵","🇸🇪", LocalDateTime.of(2026,6,20,14,0),  "Seattle",          3),
+                    p("E", "Curazao",       "Costa de Marfil",    "🇨🇼","🇨🇮", LocalDateTime.of(2026,6,20,17,0),  "Dallas",           4),
+                    p("F", "Países Bajos",  "Túnez",              "🇳🇱","🇹🇳", LocalDateTime.of(2026,6,20,20,0),  "Boston",           4),
 
-                    // ===== GRUPO L =====
-                    p("L", "Inglaterra", "Croacia", "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "🇭🇷", LocalDateTime.of(2026, 6, 17, 15, 0), "Nueva York/NJ", 1),
-                    p("L", "Ghana", "Panamá", "🇬🇭", "🇵🇦", LocalDateTime.of(2026, 6, 18, 12, 0), "Los Ángeles", 2),
-                    p("L", "Croacia", "Ghana", "🇭🇷", "🇬🇭", LocalDateTime.of(2026, 6, 24, 12, 0), "Miami", 3),
-                    p("L", "Panamá", "Inglaterra", "🇵🇦", "🏴󠁧󠁢󠁥󠁮󠁧󠁿", LocalDateTime.of(2026, 6, 24, 21, 0), "Boston", 4),
-                    p("L", "Croacia", "Panamá", "🇭🇷", "🇵🇦", LocalDateTime.of(2026, 6, 30, 19, 0), "Kansas City", 5),
-                    p("L", "Ghana", "Inglaterra", "🇬🇭", "🏴󠁧󠁢󠁥󠁮󠁧󠁿", LocalDateTime.of(2026, 6, 30, 19, 0), "Vancouver", 6)
+                    // ===== 21 de Junio =====
+                    p("H", "España",        "Arabia Saudí",       "🇪🇸","🇸🇦", LocalDateTime.of(2026,6,21,11,0),  "Atlanta",          3),
+                    p("G", "Bélgica",       "Irán",               "🇧🇪","🇮🇷", LocalDateTime.of(2026,6,21,14,0),  "Los Ángeles",      3),
+                    p("H", "Cabo Verde",    "Uruguay",            "🇨🇻","🇺🇾", LocalDateTime.of(2026,6,21,17,0),  "Guadalajara",      4),
+                    p("G", "Egipto",        "Nueva Zelanda",      "🇪🇬","🇳🇿", LocalDateTime.of(2026,6,21,20,0),  "Toronto",          4),
+
+                    // ===== 22 de Junio =====
+                    p("I", "Senegal",       "Irak",               "🇸🇳","🇮🇶", LocalDateTime.of(2026,6,22,14,0),  "Houston",          3),
+                    p("J", "Argentina",     "Austria",            "🇦🇷","🇦🇹", LocalDateTime.of(2026,6,22,14,0),  "Los Ángeles",      3),
+                    p("I", "Francia",       "Noruega",            "🇫🇷","🇳🇴", LocalDateTime.of(2026,6,22,17,0),  "San Francisco",    4),
+                    p("J", "Argelia",       "Jordania",           "🇩🇿","🇯🇴", LocalDateTime.of(2026,6,22,20,0),  "Filadelfia",       4),
+
+                    // ===== 23 de Junio =====
+                    p("K", "Congo DR",      "Uzbekistán",         "🇨🇩","🇺🇿", LocalDateTime.of(2026,6,23,14,0),  "Vancouver",        3),
+                    p("L", "Croacia",       "Ghana",              "🇭🇷","🇬🇭", LocalDateTime.of(2026,6,23,14,0),  "Miami",            3),
+                    p("K", "Portugal",      "Colombia",           "🇵🇹","🇨🇴", LocalDateTime.of(2026,6,23,17,0),  "Houston",          4),
+                    p("L", "Panamá",        "Inglaterra",         "🇵🇦","🏴󠁧󠁢󠁥󠁮󠁧󠁿", LocalDateTime.of(2026,6,23,20,0),  "Boston",           4),
+
+                    // ===== 24 de Junio =====
+                    p("A", "México",        "Chequia",            "🇲🇽","🇨🇿", LocalDateTime.of(2026,6,24,16,0),  "Ciudad de México", 5),
+                    p("A", "Sudáfrica",     "Corea del Sur",      "🇿🇦","🇰🇷", LocalDateTime.of(2026,6,24,16,0),  "Monterrey",        6),
+
+                    // ===== 25 de Junio =====
+                    p("B", "Bosnia y Herz.","Suiza",              "🇧🇦","🇨🇭", LocalDateTime.of(2026,6,25,16,0),  "Kansas City",      5),
+                    p("B", "Qatar",         "Canadá",             "🇶🇦","🇨🇦", LocalDateTime.of(2026,6,25,16,0),  "Houston",          6),
+
+                    // ===== 26 de Junio =====
+                    p("C", "Marruecos",     "Escocia",            "🇲🇦","🏴󠁧󠁢󠁳󠁣󠁴󠁿", LocalDateTime.of(2026,6,26,16,0),  "Atlanta",          5),
+                    p("C", "Haití",         "Brasil",             "🇭🇹","🇧🇷", LocalDateTime.of(2026,6,26,16,0),  "Boston",           6),
+
+                    // ===== 27 de Junio =====
+                    p("D", "Turquía",       "Estados Unidos",     "🇹🇷","🇺🇸", LocalDateTime.of(2026,6,27,16,0),  "Los Ángeles",      5),
+                    p("D", "Paraguay",      "Australia",          "🇵🇾","🇦🇺", LocalDateTime.of(2026,6,27,16,0),  "Dallas",           6),
+                    p("E", "Ecuador",       "Curazao",            "🇪🇨","🇨🇼", LocalDateTime.of(2026,6,27,19,30), "Houston",          5),
+                    p("E", "Costa de Marfil","Alemania",          "🇨🇮","🇩🇪", LocalDateTime.of(2026,6,27,19,30), "Kansas City",      6),
+                    p("F", "Japón",         "Túnez",              "🇯🇵","🇹🇳", LocalDateTime.of(2026,6,27,22,0),  "San Francisco",    5),
+                    p("F", "Suecia",        "Países Bajos",       "🇸🇪","🇳🇱", LocalDateTime.of(2026,6,27,22,0),  "Seattle",          6),
+                    p("G", "Irán",          "Nueva Zelanda",      "🇮🇷","🇳🇿", LocalDateTime.of(2026,6,27,16,0),  "Los Ángeles",      5),
+                    p("G", "Egipto",        "Bélgica",            "🇪🇬","🇧🇪", LocalDateTime.of(2026,6,27,16,0),  "Filadelfia",       6),
+                    p("H", "Cabo Verde",    "Uruguay",            "🇨🇻","🇺🇾", LocalDateTime.of(2026,6,28,16,0),  "Miami",            5),
+                    p("H", "Arabia Saudí",  "España",             "🇸🇦","🇪🇸", LocalDateTime.of(2026,6,28,16,0),  "Nueva York/NJ",    6),
+                    p("I", "Senegal",       "Noruega",            "🇸🇳","🇳🇴", LocalDateTime.of(2026,6,28,19,30), "Atlanta",          5),
+                    p("I", "Irak",          "Francia",            "🇮🇶","🇫🇷", LocalDateTime.of(2026,6,28,19,30), "San Francisco",    6),
+                    p("J", "Austria",       "Jordania",           "🇦🇹","🇯🇴", LocalDateTime.of(2026,6,29,16,0),  "Toronto",          5),
+                    p("J", "Argelia",       "Argentina",          "🇩🇿","🇦🇷", LocalDateTime.of(2026,6,29,16,0),  "Dallas",           6),
+                    p("K", "Congo DR",      "Colombia",           "🇨🇩","🇨🇴", LocalDateTime.of(2026,6,29,19,30), "Monterrey",        5),
+                    p("K", "Uzbekistán",    "Portugal",           "🇺🇿","🇵🇹", LocalDateTime.of(2026,6,29,19,30), "San Francisco",    6),
+                    p("L", "Croacia",       "Panamá",             "🇭🇷","🇵🇦", LocalDateTime.of(2026,6,30,16,0),  "Kansas City",      5),
+                    p("L", "Ghana",         "Inglaterra",         "🇬🇭","🏴󠁧󠁢󠁥󠁮󠁧󠁿", LocalDateTime.of(2026,6,30,16,0),  "Vancouver",        6)
                 );
 
                 partidoRepo.saveAll(partidos);
-                System.out.println("✅ " + partidos.size() + " partidos de fase de grupos cargados");
+                System.out.println("✅ " + partidos.size() + " partidos cargados correctamente");
             }
         };
     }
