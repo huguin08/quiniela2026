@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public class Dtos {
 
@@ -39,13 +38,13 @@ public class Dtos {
         private LocalDateTime fechaPartido;
         private String sede;
         private Integer ordenGrupo;
-        private String pronostico; // L, E, V — null si no ha pronosticado
+        private String pronostico;
     }
 
     @Data @NoArgsConstructor @AllArgsConstructor
     public static class PronosticoRequest {
         private Long partidoId;
-        private String resultado; // L, E, V
+        private String resultado;
     }
 
     @Data @NoArgsConstructor @AllArgsConstructor
@@ -61,6 +60,7 @@ public class Dtos {
         private String equipoVisitante;
         private String banderaLocal;
         private String banderaVisitante;
+        private LocalDateTime fechaPartido;   // <-- CAMPO AGREGADO
         private String resultado;
         private LocalDateTime fechaModificacion;
     }

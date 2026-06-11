@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,6 @@ public class PronosticoService {
         return Instant.now().isAfter(Instant.parse(cierreIso));
     }
 
-    // Obtener partidos con el pronóstico actual del usuario
     public List<PartidoDto> getPartidosConPronosticos(String nombreUsuario) {
         Usuario usuario = getUsuario(nombreUsuario);
         List<Partido> partidos = partidoRepo.findAllByOrderByGrupoAscOrdenGrupoAsc();
@@ -94,23 +92,14 @@ public class PronosticoService {
 
     public List<PronosticoDto> getMisPronosticos(String nombreUsuario) {
         Usuario usuario = getUsuario(nombreUsuario);
-        return pronosticoRepo.findByUsuario(usuario).stream().map(p -> {
-            PronosticoDto dto = new PronosticoDto();
-            dto.setPartidoId(p.getPartido().getId());
-            dto.setGrupo(p.getPartido().getGrupo());
-            dto.setEquipoLocal(p.getPartido().getEquipoLocal());
-            dto.setEquipoVisitante(p.getPartido().getEquipoVisitante());
-            dto.setBanderaLocal(p.getPartido().getBanderaLocal());
-            dto.setBanderaVisitante(p.getPartido().getBanderaVisitante());
-            dto.setResultado(p.getResultado());
-            dto.setFechaModificacion(p.getFechaModificacion());
-            return dto;
-        }).sorted(Comparator.comparing(PronosticoDto::getGrupo)
-                .thenComparing(PronosticoDto::getPartidoId))
-         .collect(Collectors.toList());
+        return pronosticoRepo.findByUsuario(usuario).stream()
+                .map(this::toDto)
+                .sorted(Comparator.comparing(PronosticoDto::getFechaPartido,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                        .thenComparing(PronosticoDto::getPartidoId))
+                .collect(Collectors.toList());
     }
 
-    // Admin: todos los pronósticos de todos los usuarios agrupados
     public List<AdminPronosticosDto> getAdminPronosticos() {
         List<Pronostico> todos = pronosticoRepo.findAllWithDetails();
         int totalPartidos = (int) partidoRepo.count();
@@ -119,22 +108,27 @@ public class PronosticoService {
                 .collect(Collectors.groupingBy(p -> p.getUsuario().getNombre()));
 
         return porUsuario.entrySet().stream().map(entry -> {
-            List<PronosticoDto> dtos = entry.getValue().stream().map(p -> {
-                PronosticoDto dto = new PronosticoDto();
-                dto.setPartidoId(p.getPartido().getId());
-                dto.setGrupo(p.getPartido().getGrupo());
-                dto.setEquipoLocal(p.getPartido().getEquipoLocal());
-                dto.setEquipoVisitante(p.getPartido().getEquipoVisitante());
-                dto.setBanderaLocal(p.getPartido().getBanderaLocal());
-                dto.setBanderaVisitante(p.getPartido().getBanderaVisitante());
-                dto.setResultado(p.getResultado());
-                dto.setFechaModificacion(p.getFechaModificacion());
-                return dto;
-            }).collect(Collectors.toList());
-
+            List<PronosticoDto> dtos = entry.getValue().stream()
+                    .map(this::toDto)
+                    .collect(Collectors.toList());
             return new AdminPronosticosDto(entry.getKey(), dtos, totalPartidos, dtos.size());
         }).sorted(Comparator.comparing(AdminPronosticosDto::getUsuario))
          .collect(Collectors.toList());
+    }
+
+    // Método centralizado para mapear Pronostico -> PronosticoDto
+    private PronosticoDto toDto(Pronostico p) {
+        PronosticoDto dto = new PronosticoDto();
+        dto.setPartidoId(p.getPartido().getId());
+        dto.setGrupo(p.getPartido().getGrupo());
+        dto.setEquipoLocal(p.getPartido().getEquipoLocal());
+        dto.setEquipoVisitante(p.getPartido().getEquipoVisitante());
+        dto.setBanderaLocal(p.getPartido().getBanderaLocal());
+        dto.setBanderaVisitante(p.getPartido().getBanderaVisitante());
+        dto.setFechaPartido(p.getPartido().getFechaPartido()); // <-- CAMPO AGREGADO
+        dto.setResultado(p.getResultado());
+        dto.setFechaModificacion(p.getFechaModificacion());
+        return dto;
     }
 
     private Usuario getUsuario(String nombre) {
