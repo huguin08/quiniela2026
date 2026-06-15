@@ -425,7 +425,7 @@ function generarReporteHTML(datos, mapaPartidosPorDia) {
         return `<tr>
           <td class="partido-cell">${partido.equipoLocal} vs ${partido.equipoVisitante}</td>
           <td class="grupo-cell">G-${partido.grupo}</td>
-          <td class="${real ? 'resultado-real' : 'sin-pron'}">${labelReal}</td>
+          
           ${celdas}
         </tr>`
       }).join('')}
@@ -456,7 +456,7 @@ function generarReporteHTML(datos, mapaPartidosPorDia) {
 <h1>⚽ Quiniela Quevaber · Mundial 2026</h1>
 <p class="sub">Reporte generado el ${new Date().toLocaleString('es-MX')}</p>
 <table><thead><tr>
-  <th class="partido-th">Partido</th><th>Grp</th><th>Resultado</th>
+  <th class="partido-th">Partido</th><th>Grp</th>
   ${datos.map(u => `<th>${u.usuario}</th>`).join('')}
 </tr></thead><tbody>${filas}</tbody></table>
 </body></html>`
