@@ -419,7 +419,7 @@ function generarReporteHTML(datos, mapaPartidosPorDia) {
           if (!pron) return '<td class="sin-pron">—</td>'
           const label = pron.resultado === 'L' ? partido.equipoLocal : pron.resultado === 'V' ? partido.equipoVisitante : 'Empate'
           const cls = pron.resultado === 'L' ? 'local' : pron.resultado === 'V' ? 'visita' : 'empate'
-          const eval_ = real ? (pron.resultado === real ? ' ✅' : ' ❌') : ''
+          const eval_ = ''
           return `<td class="${cls}">${label}${eval_}</td>`
         }).join('')
         return `<tr>
