@@ -7,20 +7,33 @@ const ORDEN_DIAS = [
   '2026-06-11','2026-06-12','2026-06-13','2026-06-14','2026-06-15',
   '2026-06-16','2026-06-17','2026-06-18','2026-06-19','2026-06-20',
   '2026-06-21','2026-06-22','2026-06-23','2026-06-24','2026-06-25',
-  '2026-06-26','2026-06-27','2026-06-28','2026-06-29','2026-06-30',
+  '2026-06-26','2026-06-27',
 ]
 
-// Resultados reales conocidos hasta hoy — actualizar conforme avance el torneo
+// Resultados reales confirmados al 15 Jun 2026
+// L = Local gana, E = Empate, V = Visitante gana
 const RESULTADOS_REALES = {
-  'México|Sudáfrica':          'L',
-  'Corea del Sur|Chequia':     'L',
-  'Canadá|Bosnia y Herz.':     'E',
-  'Estados Unidos|Paraguay':   'L',
-  'Qatar|Suiza':               'E',
-  'Brasil|Marruecos':          'E',
-  'Haití|Escocia':             'V',
-  'Australia|Turquía':         'L',
-  'Alemania|Curazao':          'L',
+  // 11 Jun
+  'México|Sudáfrica':          'L', // 2-0
+  'Corea del Sur|Chequia':     'L', // 2-1
+  // 12 Jun
+  'Canadá|Bosnia y Herz.':     'E', // 1-1
+  'Estados Unidos|Paraguay':   'L', // 4-1
+  // 13 Jun
+  'Qatar|Suiza':               'E', // 1-1
+  'Australia|Turquía':         'L', // 2-0
+  'Brasil|Marruecos':          'E', // 1-1
+  'Haití|Escocia':             'V', // 0-1
+  // 14 Jun
+  'Alemania|Curazao':          'L', // 7-1
+  'Países Bajos|Japón':        'E', // pendiente marcador
+  'Costa de Marfil|Ecuador':   'L', // gana Costa de Marfil
+  'Suecia|Túnez':              'L', // gana Suecia
+  // 15 Jun
+  'España|Cabo Verde':         'E', // empate
+  'Bélgica|Egipto':            'E', // empate
+  'Arabia Saudí|Uruguay':      'E', // empate
+  // Irán vs Nueva Zelanda — en curso, se agrega cuando termine
 }
 
 function labelDia(fechaStr) {
@@ -38,11 +51,10 @@ function getClase(r) {
   return r === 'L' ? 'res-L' : r === 'E' ? 'res-E' : 'res-V'
 }
 
-function construirMapaPorDia(datos, todosPartidos) {
+function construirMapaPorDia(datos) {
   const mapa = {}
   const vistos = new Set()
 
-  // Primero armamos la lista de todos los partidos desde los pronósticos
   datos.forEach(usuario => {
     usuario.pronosticos.forEach(p => {
       const key = `${p.equipoLocal}|${p.equipoVisitante}`
@@ -73,7 +85,6 @@ function generarExcel(datos, mapaPartidosPorDia) {
   const diasConPartidos = ORDEN_DIAS.filter(f => mapaPartidosPorDia[f]?.length > 0)
   const participantes = datos.map(d => d.usuario)
 
-  // Encabezado
   const encabezado = [
     'Fecha', 'Grupo', 'Local', 'Visitante', 'Resultado Real',
     ...participantes,
@@ -106,7 +117,7 @@ function generarExcel(datos, mapaPartidosPorDia) {
       })
 
       const aciertoCols = participantes.map(nombre => {
-        if (!resultadoReal) return ''
+        if (!resultadoReal) return 'Pendiente'
         const usuario = datos.find(d => d.usuario === nombre)
         const pron = usuario?.pronosticos.find(p =>
           p.equipoLocal === partido.equipoLocal && p.equipoVisitante === partido.equipoVisitante)
@@ -126,13 +137,11 @@ function generarExcel(datos, mapaPartidosPorDia) {
     })
   })
 
-  // Hoja de resumen de aciertos
+  // Hoja resumen
   const resumenEncabezado = ['Participante', 'Partidos Jugados', 'Aciertos', 'Errores', 'Sin pronóstico', 'Efectividad %']
-  const resumenFilas = [resumenEncabezado]
-
   const partidosJugados = Object.keys(RESULTADOS_REALES)
 
-  datos.forEach(d => {
+  const resumenFilas = datos.map(d => {
     let aciertos = 0, errores = 0, sinPron = 0
     partidosJugados.forEach(key => {
       const [local, visitante] = key.split('|')
@@ -140,21 +149,16 @@ function generarExcel(datos, mapaPartidosPorDia) {
       if (!pron) { sinPron++; return }
       pron.resultado === RESULTADOS_REALES[key] ? aciertos++ : errores++
     })
-    const efectividad = partidosJugados.length > 0
-      ? Math.round((aciertos / (aciertos + errores || 1)) * 100)
+    const efectividad = (aciertos + errores) > 0
+      ? Math.round((aciertos / (aciertos + errores)) * 100)
       : 0
-    resumenFilas.push([d.usuario, partidosJugados.length, aciertos, errores, sinPron, `${efectividad}%`])
-  })
+    return [d.usuario, partidosJugados.length, aciertos, errores, sinPron, `${efectividad}%`]
+  }).sort((a, b) => b[2] - a[2])
 
-  // Ordenar resumen por aciertos desc
-  const resumenOrdenado = [resumenEncabezado, ...resumenFilas.slice(1).sort((a, b) => b[2] - a[2])]
-
-  // Crear workbook con dos hojas
   const wb = XLSX.utils.book_new()
   const wsPronosticos = XLSX.utils.aoa_to_sheet(filas)
-  const wsResumen = XLSX.utils.aoa_to_sheet(resumenOrdenado)
+  const wsResumen = XLSX.utils.aoa_to_sheet([resumenEncabezado, ...resumenFilas])
 
-  // Ancho de columnas
   wsPronosticos['!cols'] = [
     { wch: 14 }, { wch: 8 }, { wch: 18 }, { wch: 18 }, { wch: 16 },
     ...participantes.map(() => ({ wch: 16 })),
@@ -169,6 +173,66 @@ function generarExcel(datos, mapaPartidosPorDia) {
 
   const fecha = new Date().toLocaleDateString('es-MX').replace(/\//g, '-')
   XLSX.writeFile(wb, `Quiniela_Quevaber_${fecha}.xlsx`)
+}
+
+function generarReporteHTML(datos, mapaPartidosPorDia) {
+  const diasConPartidos = ORDEN_DIAS.filter(f => mapaPartidosPorDia[f]?.length > 0)
+
+  const filas = diasConPartidos.map(dia => {
+    const psDelDia = mapaPartidosPorDia[dia] || []
+    return `
+      <tr class="dia-row">
+        <td colspan="${2 + datos.length}" class="dia-header">📅 ${labelDia(dia)}</td>
+      </tr>
+      ${psDelDia.map(partido => {
+        const celdas = datos.map(u => {
+          const pron = u.pronosticos.find(p =>
+            p.equipoLocal === partido.equipoLocal && p.equipoVisitante === partido.equipoVisitante)
+          if (!pron) return '<td class="sin-pron">—</td>'
+          const label = pron.resultado === 'L'
+            ? partido.equipoLocal
+            : pron.resultado === 'V'
+              ? partido.equipoVisitante
+              : 'Empate'
+          const cls = pron.resultado === 'L' ? 'local' : pron.resultado === 'V' ? 'visita' : 'empate'
+          return `<td class="${cls}">${label}</td>`
+        }).join('')
+        return `<tr>
+          <td class="partido-cell">${partido.equipoLocal} vs ${partido.equipoVisitante}</td>
+          <td class="grupo-cell">G-${partido.grupo}</td>
+          ${celdas}
+        </tr>`
+      }).join('')}
+    `
+  }).join('')
+
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+<title>Reporte Quiniela Quevaber Mundial 2026</title>
+<style>
+  body{font-family:Arial,sans-serif;font-size:11px;margin:20px;color:#111}
+  h1{text-align:center;font-size:18px;margin-bottom:4px}
+  p.sub{text-align:center;color:#666;margin-bottom:16px;font-size:11px}
+  table{width:100%;border-collapse:collapse}
+  th{background:#1a5c2e;color:#FFD700;padding:6px 8px;text-align:center;font-size:10px}
+  th.partido-th{text-align:left;min-width:160px}
+  td{padding:5px 8px;border-bottom:1px solid #ddd;text-align:center}
+  td.partido-cell{text-align:left;font-weight:600}
+  td.grupo-cell{color:#888;font-size:10px}
+  td.sin-pron{color:#ccc}
+  td.local{background:#e6f7ee;color:#1a5c2e;font-weight:700}
+  td.empate{background:#fffbe6;color:#8a6900;font-weight:700}
+  td.visita{background:#e8f0ff;color:#1a3a8a;font-weight:700}
+  tr.dia-row td{background:#f0f0f0;font-weight:700;font-size:12px;padding:8px;border-top:2px solid #aaa}
+  @media print{body{margin:8px}}
+</style></head><body>
+<h1>⚽ Quiniela Quevaber · Mundial 2026</h1>
+<p class="sub">Reporte generado el ${new Date().toLocaleString('es-MX')}</p>
+<table><thead><tr>
+  <th class="partido-th">Partido</th><th>Grp</th>
+  ${datos.map(u => `<th>${u.usuario}</th>`).join('')}
+</tr></thead><tbody>${filas}</tbody></table>
+</body></html>`
 }
 
 export default function AdminPage() {
@@ -202,17 +266,12 @@ export default function AdminPage() {
     : datos
 
   const tablaPos = [...datos].sort((a, b) => {
-    const aciertosA = Object.keys(RESULTADOS_REALES).filter(key => {
+    const calc = (d) => Object.keys(RESULTADOS_REALES).filter(key => {
       const [local, visitante] = key.split('|')
-      const p = a.pronosticos.find(p => p.equipoLocal === local && p.equipoVisitante === visitante)
+      const p = d.pronosticos.find(p => p.equipoLocal === local && p.equipoVisitante === visitante)
       return p && p.resultado === RESULTADOS_REALES[key]
     }).length
-    const aciertosB = Object.keys(RESULTADOS_REALES).filter(key => {
-      const [local, visitante] = key.split('|')
-      const p = b.pronosticos.find(p => p.equipoLocal === local && p.equipoVisitante === visitante)
-      return p && p.resultado === RESULTADOS_REALES[key]
-    }).length
-    return aciertosB - aciertosA
+    return calc(b) - calc(a)
   })
 
   return (
@@ -225,7 +284,6 @@ export default function AdminPage() {
       </div>
 
       <div className="app-container page-contenido">
-        {/* Stats */}
         <div className="card mt-16" style={{ display: 'flex', gap: 24, justifyContent: 'center', textAlign: 'center', flexWrap: 'wrap' }}>
           <div>
             <div style={{ fontSize: '2rem', fontFamily: 'Bebas Neue', color: 'var(--dorado)' }}>{datos.length}</div>
@@ -245,27 +303,17 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Botones */}
         <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-          <button
-            className="btn btn-dorado"
-            onClick={() => generarExcel(datos, mapaPartidosPorDia)}
-            disabled={datos.length === 0}
-            style={{ flex: 1 }}
-          >
+          <button className="btn btn-dorado" onClick={() => generarExcel(datos, mapaPartidosPorDia)}
+            disabled={datos.length === 0} style={{ flex: 1 }}>
             📊 Descargar Excel
           </button>
-          <button
-            className="btn btn-outline"
-            onClick={abrirReporte}
-            disabled={datos.length === 0}
-            style={{ flex: 1 }}
-          >
+          <button className="btn btn-outline" onClick={abrirReporte}
+            disabled={datos.length === 0} style={{ flex: 1 }}>
             📄 Reporte PDF
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="login-tabs mt-16">
           <button className={`login-tab ${vistaActiva === 'tabla' ? 'activo' : ''}`} onClick={() => setVistaActiva('tabla')}>
             📊 Pronósticos
@@ -280,11 +328,7 @@ export default function AdminPage() {
             <table className="admin-tabla" style={{ width: '100%' }}>
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Participante</th>
-                  <th>Aciertos</th>
-                  <th>Completados</th>
-                  <th>Avance</th>
+                  <th>#</th><th>Participante</th><th>Aciertos</th><th>Completados</th><th>Avance</th>
                 </tr>
               </thead>
               <tbody>
@@ -318,13 +362,8 @@ export default function AdminPage() {
         {vistaActiva === 'tabla' && (
           <div>
             <div className="form-group mt-16">
-              <input
-                className="input-field"
-                type="text"
-                placeholder="🔍 Buscar participante..."
-                value={filtroUsuario}
-                onChange={e => setFiltroUsuario(e.target.value)}
-              />
+              <input className="input-field" type="text" placeholder="🔍 Buscar participante..."
+                value={filtroUsuario} onChange={e => setFiltroUsuario(e.target.value)} />
             </div>
 
             {diasConPartidos.map(fecha => {
@@ -337,7 +376,6 @@ export default function AdminPage() {
                       {labelDia(fecha)} · {psDelDia.length} partido{psDelDia.length > 1 ? 's' : ''}
                     </span>
                   </div>
-
                   {psDelDia.map(partido => {
                     const key = `${partido.equipoLocal}|${partido.equipoVisitante}`
                     const resultadoReal = RESULTADOS_REALES[key]
@@ -367,7 +405,7 @@ export default function AdminPage() {
                                 <span style={{ color: 'var(--texto-suave)' }}>{u.usuario}</span>
                                 {pron ? (
                                   <span className={`resumen-resultado ${getClase(pron.resultado)}`}
-                                    style={{ fontSize: '0.7rem', padding: '2px 8px', position: 'relative' }}>
+                                    style={{ fontSize: '0.7rem', padding: '2px 8px' }}>
                                     {getRes(pron.resultado, partido.equipoLocal, partido.equipoVisitante)}
                                     {esAcierto && <span style={{ marginLeft: 4 }}>✅</span>}
                                     {esError && <span style={{ marginLeft: 4 }}>❌</span>}
@@ -390,74 +428,12 @@ export default function AdminPage() {
       </div>
 
       <div className="nav-bottom">
-        <button
-          className="btn btn-danger"
+        <button className="btn btn-danger"
           onClick={() => { localStorage.clear(); navigate('/') }}
-          style={{ flex: 0, padding: '10px 18px' }}
-        >🚪 Salir</button>
+          style={{ flex: 0, padding: '10px 18px' }}>
+          🚪 Salir
+        </button>
       </div>
     </div>
   )
-}
-
-// Función del reporte HTML (se mantiene para el botón PDF)
-function generarReporteHTML(datos, mapaPartidosPorDia) {
-  const diasConPartidos = ORDEN_DIAS.filter(f => mapaPartidosPorDia[f]?.length > 0)
-
-  const filas = diasConPartidos.map(dia => {
-    const psDelDia = mapaPartidosPorDia[dia] || []
-    return `
-      <tr class="dia-row">
-        <td colspan="${3 + datos.length}" class="dia-header">📅 ${labelDia(dia)}</td>
-      </tr>
-      ${psDelDia.map(partido => {
-        const key = `${partido.equipoLocal}|${partido.equipoVisitante}`
-        const real = RESULTADOS_REALES[key]
-        const labelReal = real === 'L' ? partido.equipoLocal : real === 'V' ? partido.equipoVisitante : real === 'E' ? 'Empate' : '—'
-        const celdas = datos.map(u => {
-          const pron = u.pronosticos.find(p => p.equipoLocal === partido.equipoLocal && p.equipoVisitante === partido.equipoVisitante)
-          if (!pron) return '<td class="sin-pron">—</td>'
-          const label = pron.resultado === 'L' ? partido.equipoLocal : pron.resultado === 'V' ? partido.equipoVisitante : 'Empate'
-          const cls = pron.resultado === 'L' ? 'local' : pron.resultado === 'V' ? 'visita' : 'empate'
-          const eval_ = ''
-          return `<td class="${cls}">${label}${eval_}</td>`
-        }).join('')
-        return `<tr>
-          <td class="partido-cell">${partido.equipoLocal} vs ${partido.equipoVisitante}</td>
-          <td class="grupo-cell">G-${partido.grupo}</td>
-          
-          ${celdas}
-        </tr>`
-      }).join('')}
-    `
-  }).join('')
-
-  return `<!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8">
-<title>Reporte Quiniela Quevaber Mundial 2026</title>
-<style>
-  body{font-family:Arial,sans-serif;font-size:11px;margin:20px;color:#111}
-  h1{text-align:center;font-size:18px;margin-bottom:4px}
-  p.sub{text-align:center;color:#666;margin-bottom:16px;font-size:11px}
-  table{width:100%;border-collapse:collapse}
-  th{background:#1a5c2e;color:#FFD700;padding:6px 8px;text-align:center;font-size:10px}
-  th.partido-th{text-align:left;min-width:160px}
-  td{padding:5px 8px;border-bottom:1px solid #ddd;text-align:center}
-  td.partido-cell{text-align:left;font-weight:600}
-  td.grupo-cell{color:#888;font-size:10px}
-  td.resultado-real{font-weight:700;color:#1a5c2e}
-  td.sin-pron{color:#ccc}
-  td.local{background:#e6f7ee;color:#1a5c2e;font-weight:700}
-  td.empate{background:#fffbe6;color:#8a6900;font-weight:700}
-  td.visita{background:#e8f0ff;color:#1a3a8a;font-weight:700}
-  tr.dia-row td{background:#f0f0f0;font-weight:700;font-size:12px;padding:8px;border-top:2px solid #aaa}
-  @media print{body{margin:8px}}
-</style></head><body>
-<h1>⚽ Quiniela Quevaber · Mundial 2026</h1>
-<p class="sub">Reporte generado el ${new Date().toLocaleString('es-MX')}</p>
-<table><thead><tr>
-  <th class="partido-th">Partido</th><th>Grp</th>
-  ${datos.map(u => `<th>${u.usuario}</th>`).join('')}
-</tr></thead><tbody>${filas}</tbody></table>
-</body></html>`
 }
