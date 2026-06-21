@@ -33,6 +33,26 @@ const RESULTADOS_REALES = {
   'España|Cabo Verde':         'E', // empate
   'Bélgica|Egipto':            'E', // empate
   'Arabia Saudí|Uruguay':      'E', // empate
+  'Irán|Nueva Zelanda':        'E',
+  'Francia|Senegal':           'L',
+  'Irak|Noruega':              'V',
+  'Austria|Jordania':          'L',
+  'Argelia|Argentina':         'V',
+  'Portugal|Congo DR':         'E',
+  'Inglaterra|Croacia':        'L',
+  'Ghana|Panamá':              'L',
+  'Uzbekistán|Colombia':       'V',
+  'Chequia|Sudáfrica':         'E',
+  'Bosnia y Herz.|Suiza':      'V',
+  'Qatar|Canadá':              'V',
+  'México|Corea del Sur':      'L',
+  'Estados Unidos|Australia':  'L',
+  'Marruecos|Escocia':         'L',
+  'Haití|Brasil':              'V',
+  'Turquía|Paraguay':          'V',
+  'Ecuador|Curazao':           'E',
+  'Costa de Marfil|Alemania':  'V',
+  'Suecia|Paises Bajos':       'V',
   // Irán vs Nueva Zelanda — en curso, se agrega cuando termine
 }
 
