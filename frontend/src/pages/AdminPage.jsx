@@ -53,6 +53,19 @@ const RESULTADOS_REALES = {
   'Ecuador|Curazao':           'E',
   'Costa de Marfil|Alemania':  'V',
   'Suecia|Paises Bajos':       'V',
+  'Japón|Túnez':               'L',
+  'Bélgica|Irán':              'E',
+  'Cabo Verde|Uruguay':        'E',
+  'Arabia Saudí|España':       'V',
+  'Nueva Zelanda|Egipto':      'V',
+  'Senegal|Noruega':           'V',
+  'Irak|Francia':              'V',
+  'Argentina|Austria':         'L',
+  'Argelia|Jotdania':          'L',
+  'Croacia|Panamá':            'L',
+  'Ghana|Inglaterra':          'E',
+  'Congo DR|Colombia':         'V',
+  'Uzbekistán|Portugal':       'V',
   // Irán vs Nueva Zelanda — en curso, se agrega cuando termine
 }
 
