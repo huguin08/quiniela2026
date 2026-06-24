@@ -66,6 +66,8 @@ const RESULTADOS_REALES = {
   'Ghana|Inglaterra':          'E',
   'Congo DR|Colombia':         'V',
   'Uzbekistán|Portugal':       'V',
+  'Suiza|Canadá':              'L',
+  'Bosnia y Herz.|Qatar':      'L',
   // Irán vs Nueva Zelanda — en curso, se agrega cuando termine
 }
 
