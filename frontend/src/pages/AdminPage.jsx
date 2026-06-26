@@ -34,41 +34,62 @@ const RESULTADOS_REALES = {
   'Bélgica|Egipto':            'E', // empate
   'Arabia Saudí|Uruguay':      'E', // empate
   'Irán|Nueva Zelanda':        'E',
+  // 16 de Junio
   'Francia|Senegal':           'L',
   'Irak|Noruega':              'V',
   'Austria|Jordania':          'L',
   'Argelia|Argentina':         'V',
+  // 17 de Junio
   'Portugal|Congo DR':         'E',
   'Inglaterra|Croacia':        'L',
   'Ghana|Panamá':              'L',
   'Uzbekistán|Colombia':       'V',
+  // 18 de Junio
   'Chequia|Sudáfrica':         'E',
   'Bosnia y Herz.|Suiza':      'V',
   'Qatar|Canadá':              'V',
   'México|Corea del Sur':      'L',
+  // 19 de Junio
   'Estados Unidos|Australia':  'L',
   'Marruecos|Escocia':         'L',
   'Haití|Brasil':              'V',
   'Turquía|Paraguay':          'V',
+  // 20 de Junio
   'Ecuador|Curazao':           'E',
   'Costa de Marfil|Alemania':  'V',
   'Suecia|Países Bajos':       'V',
   'Japón|Túnez':               'L',
+  // 21 de Junio
   'Bélgica|Irán':              'E',
   'Cabo Verde|Uruguay':        'E',
   'Arabia Saudí|España':       'V',
   'Nueva Zelanda|Egipto':      'V',
+  // 22 de Junio
   'Senegal|Noruega':           'V',
   'Irak|Francia':              'V',
   'Argentina|Austria':         'L',
   'Argelia|Jordania':          'L',
+  //23 de Junio
   'Croacia|Panamá':            'L',
   'Ghana|Inglaterra':          'E',
   'Congo DR|Colombia':         'V',
   'Uzbekistán|Portugal':       'V',
+  // 24 de Junio
   'Suiza|Canadá':              'L',
   'Bosnia y Herz.|Qatar':      'L',
-  // Irán vs Nueva Zelanda — en curso, se agrega cuando termine
+  'Marruecos|Haití':           'L',
+  'Escocia|Brasil':            'V',
+  'Chequia|México':            'V',
+  'Sudáfrica|Corea del Sur':   'L',
+  // 25 de Junio
+  'Japón|Suecia':              'E',
+  'Ecuador|Alemania':          'L',
+  'Curazao|Costa de Marfil':   'V',
+  'Turquía|Estados Unidos':    'L',
+  'Paraguay|Australia':        'E',
+  'Túnez|Países Bajos':        'V',
+  //'Cabo Verde|Arabia Saudí':   ''
+  
 }
 
 function labelDia(fechaStr) {
